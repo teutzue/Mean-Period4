@@ -1,0 +1,125 @@
+1.Explain basic security terms like authentication, authorization, confidentiality, integrity, SSL/TLS and provide examples of how you have used them.
+
+Authentication is:Confirming the identity of a client (via some kind of login procedure)
+
+Authorisation is:Determining whether an authenticated client is allowed to receive a service or perform an operation
+
+Confidentiality is:
+Protection from disclosure to unauthorised persons
+
+Integrity
+Maintaining data consistency (data cannot be modified)
+
+Transport Layer Security (TLS) is a protocol that ensures privacy between communicating applications and their users on the Internet. When a server and client communicate, TLS ensures that no third party may eavesdrop or tamper with any message. TLS is the successor to the Secure Sockets Layer (SSL).
+
+TLS include two layers:
+
+A Record Protocol and a Handshake Protocol, and these are layered above a transport protocol such as TCP/IP.
+They both use asymmetric and symmetric cryptography techniques.
+The figure below illustrates the Handshake Part
+
+2. Explain basic security threads like: Cross Site Scripting (XSS), SQL Injection and whether something similar to SQL injection is possible with NoSQL databases like MongoDB, and DOS-attacks. Explain/demonstrate ways to cope with these problems
+
+Cross Site Scripting (XSS):
+- is actually HTML injection
+- you can inject js in a form and change the behaviour of the program
+- can steal and guess the pass or get the session id (see the vids again);
+	if you get the sessionId you can act as the valid user(BAD)
+- how does it work? >> submit a param in the URL “…?user=Bob”
+what if “?user=<…input form>” inject html in the url (BAD)
+- solution: output encoding ex: encodeForHtml, sanitize input(check again if true)
+
+SQL Injection:
+- the problem is users sends some strange data and the system gets confused
+ ex: if you submit smth like: OR ’1’=‘1’ >> return * from db (BAD)
+-solution is: param. queries, input validation but ypu can not do it 100%
+
+NoSql injection is possible?:
+- it is through the weakness of the application
+- PHP has a built in mechanism for associative arrays whichallows an attacker to send  malicious payload using the $ sign an get all data username[$ne]=1&password[$ne]=1
+- is its possible through JSON because it is built as a string and the attacker could 
+still send code and modify the behaviour of the app
+use this link: http://arxiv.org/pdf/1506.04082.pdf
+
+DOS attack: 
+- try to set a lot of traffic on a website
+- try to exhaust the network 
+- solution: An effective defense against an HTTP flood can be the deployment of a reverse proxy >> deciding which guests are allowed into the party, where the real web server is
+
+3. Explain, at a fundamental level, the technologies involved, and the steps required initialize a SSL connection between a browser and a server and how to use SSL in a secure way.
+
+What Happens When a Browser Encounters SSL
+A browser attempts to connect to a website secured with SSL.
+The browser requests that the web server identify itself.
+The server sends the browser a copy of its SSL Certificate.
+The browser checks whether it trusts the SSL Certificate. If so, it sends a message to the server.
+The server sends back a digitally signed acknowledgement to start an SSL encrypted session.
+Encrypted data is shared between the browser and the server and https appears.
+
+SSL (Secure Sockets Layer) is the standard security technology for establishing an encrypted link between a web server and a browser. This link ensures that all data passed between the web server and browsers remain private and integral. SSL is an industry standard and is used by millions of websites in the protection of their online transactions with their customers.
+
+To be able to create an SSL connection a web server requires an SSL Certificate. When you choose to activate SSL on your web server you will be prompted to complete a number of questions about the identity of your website and your company. Your web server then creates two cryptographic keys - a Private Key and a Public Key.
+
+The Public Key does not need to be secret and is placed into a Certificate Signing Request (CSR) - a data file also containing your details. You should then submit the CSR. During the SSL Certificate application process, the Certification Authority will validate your details and issue an SSL Certificate containing your details and allowing you to use SSL. Your web server will match your issued SSL Certificate to your Private Key. Your web server will then be able to establish an encrypted link between the website and your customer's web browser.
+
+The complexities of the SSL protocol remain invisible to your customers. Instead their browsers provide them with a key indicator to let them know they are currently protected by an SSL encrypted session - the lock icon in the lower right-hand corner, clicking on the lock icon displays your SSL Certificate and the details about it. All SSL Certificates are issued to either companies or legally accountable individuals.
+
+Typically an SSL Certificate will contain your domain name, your company name, your address, your city, your state and your country. It will also contain the expiration date of the Certificate and details of the Certification Authority responsible for the issuance of the Certificate. When a browser connects to a secure site it will retrieve the site's SSL Certificate and check that it has not expired, it has been issued by a Certification Authority the browser trusts, and that it is being used by the website for which it has been issued. If it fails on any one of these checks the browser will display a warning to the end user letting them know that the site is not secured by SSL.
+
+4.Explain and demonstrate ways to protect user passwords on our backends, and why this is necessary.
+
+Passwords need to be stored properly and safely. The problem is that you can not store them in plain text and need to “hide” them by hashing and using  the salt. So far this is the safest way to keep users’ passwords. Of course, they want to have privacy, this is why we do this.
+
+5.Explain about password hashing, salts and the difference between bcrypt and older (not recommended) algorithms like sha1, md5 etc.
+
+Hashing: turn the password into an unreadable and usable way and not be able to go back to it unless you have the key (with which it has been encrypted).
+
+The problem with hasing is that hackers can build dictionaries and do reverse engineering to get to the password. BAD! 
+Solution add the salt to tha password: it is some additional input to a one way hasing function and the primary purpose of the salt is to defend dictionary attacks.
+
+the adv of bcrypt is that it is designed to be slow and therefore it makes it hard to create dictionaries 
+
+add comparison between algo!!!
+
+6. Explain about JSON Web Tokens (jwt) and why they are very suited for a REST-based API
+
+- returns secure info to the clients
+- do not auth all the time > use tokens for further req
+- jwt is self contained> has info about issuer, etc
+- tokens can be seen by everyone 
+- can be used on multiple websites > shared 
+Stricture> 3 parts: header.payload.signature 
+- base64 encoded (not encrypted)
+- header > type, alg
+- signature > = header + . + payload 
+Well suited because once you auth you can use the jwt for further req and still be safe.
+
+7. Explain and demonstrate a system using jwt's, focusing on both client and server side.
+
+Demo the seed
+
+8. Explain and demonstrate use of the npm passportjs module
+
+Passportjs is a middleware to be used in express applications and supports authetification with fb, twitter and more.
+
+demo seed
+
+9. Explain, at a very basic level, OAuth 2 + OpenID Connect and the problems it solves.
+
+OAuth 2 is an authorization framework that enables applications to obtain limited access to user accounts on an
+ HTTP service, such as Facebook, GitHub, and DigitalOcean. It works by delegating user authentication to the service
+ that hosts the user account, and authorizing third-party applications to access the user account. OAuth 2 provides
+ authorization flows for web and desktop applications, and mobile devices.
+ OpenID Connect is an interoperable authentication protocol based on the OAuth 2.0 family of specifications. It uses
+ straightforward REST/JSON message flows with a design goal of “making simple things simple and complicated things
+ possible”. It’s uniquely easy for developers to integrate, compared to any preceding Identity protocol.
+ OpenID Connect lets developers authenticate their users across websites and apps without having to own and manage
+ password files. For the app builder, it provides a secure verifiable, answer to the question: “What is the identity
+ of the person currently using the browser or native app that is connected to me?”
+ OpenID Connect allows for clients of all types, including browser-based JavaScript and native mobile apps, to launch
+ sign-in flows and receive verifiable assertions about the identity of signed-in users.
+
+10. demo the eseed 
+ 
+
+
